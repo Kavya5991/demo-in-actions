@@ -5,14 +5,14 @@ on:
    push:
     branches: [main]
 jobs:
-    build:
-        runs-on: ubuntu-latest
-    steps:
+   build:
+      runs-on: ubuntu-latest
+      steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+         - uses: actions/checkout@v3
         
-    - name : Run a multi-line script
-    run: |
-        echo Getting variable from Application ${{ vars.APPLICATIONNAME }} and Environment is ${{ vars.ENVIRONMENT }}
-        ls -ltr
-        echo test, and deploy your project.
+         - name : Run a multi-line script
+         run: |
+            echo Getting variable from Application ${{ vars.APPLICATIONNAME }} and Environment is ${{ vars.ENVIRONMENT }}
+            ls -ltr
+            echo test, and deploy your project.
