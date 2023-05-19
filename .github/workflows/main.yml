@@ -2,17 +2,52 @@
 
 name: CI
 on:
-   push:
-    branches: ["main"]
+  schedule:
+    - cron: '30 5 * * 1,3'
+    - cron: '30 5 * * 1,4'
+#   push:
+#     branches: [main]
+#   workflow_dispatch:
+    # inputs:
+    #   runner_id:
+    #     description:  please pass the runner which platform that you want to use
+    #     required: true
+    #     type: choice
+    #     options:
+    #       - ubuntu-latest
+    #       - windows-latest
+    #       - macos-latest
+    #       - ubuntu-20.04
+    #       - windows-2019
+
 jobs:
-   build:
-      runs-on: ubuntu-latest
-      steps:
+  demorun:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-20.04, windows-2019]
+    runs-on: ${{ matrix.os }}
+    steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-         - uses: actions/checkout@v3
-        
-         - name : Run a multi-line script
-           run: |
-            echo Getting variable from Application ${{ vars.APPLICATIONNAME }} and Environment is ${{ vars.ENVIRONMENT }}
-            ls -ltr
-            echo test, and deploy your project.
+      - uses: actions/checkout@v3
+        with:
+          ref: demo-2
+      - run: |
+           date > date.txt
+           git config user.name github-actions-in-place
+           git config user.email github-actions-in-place@no-reply.com
+           git add .
+           git commit -m "date generated" .
+          #  git push
+           
+      
+
+      # Runs a set of commands using the runners shell &&
+      - name: Run only On Windows Machines
+        if: ${{ github.event.inputs.runner_id == 'windows-2019' || github.event.inputs.runner_id == 'windows-latest' }}
+        run: |
+          dir
+      # Runs a set of commands using the runners shell
+      - name: Run only On Linux Machines
+        if: ${{ github.event.inputs.runner_id != 'windows-2019' && github.event.inputs.runner_id != 'windows-latest' }}
+        run: |
+          ls -ltr 
